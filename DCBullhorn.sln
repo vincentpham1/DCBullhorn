@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.271
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DCBullhorn", "DCBullhorn\DCBullhorn.csproj", "{5F5C6615-47D6-46BC-9C30-90493C2FAAAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeltaCompanies", "DeltaCompanies\DeltaCompanies.csproj", "{FE552371-79CB-4910-A0DB-769F4F43A6A8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5F5C6615-47D6-46BC-9C30-90493C2FAAAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F5C6615-47D6-46BC-9C30-90493C2FAAAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F5C6615-47D6-46BC-9C30-90493C2FAAAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F5C6615-47D6-46BC-9C30-90493C2FAAAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE552371-79CB-4910-A0DB-769F4F43A6A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE552371-79CB-4910-A0DB-769F4F43A6A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE552371-79CB-4910-A0DB-769F4F43A6A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE552371-79CB-4910-A0DB-769F4F43A6A8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CD2C8D89-96AB-4298-B7A3-C252777A08F1}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://phokingya.visualstudio.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = DCBullhorn\\DCBullhorn.csproj
+		SccProjectName1 = DCBullhorn
+		SccLocalPath1 = DCBullhorn
+		SccProjectUniqueName2 = DeltaCompanies\\DeltaCompanies.csproj
+		SccProjectName2 = DeltaCompanies
+		SccLocalPath2 = DeltaCompanies
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,251 @@
+﻿@model List<JobOrder>
+
+<h3>Candidates</h3>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table id="datatableJobOrder" class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var JobOrder in Model)
+                                {
+                                    <tr>
+                                        <td>@JobOrder.ID</td>
+                                        <td>@JobOrder.Title</td>
+                                        <td id="statusName@(JobOrder.ID)">@JobOrder.Status.Name</td>
+                                        <td>
+                                            <a id="@JobOrder.ID" data-id="@JobOrder.StatusID" class="EditStatusLink" href="javascript:void(0)">Update Status</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section BodyArea {
+    <!-- Edit Status Modal -->
+    <div id="editStatusModal" tabindex="-1" role="dialog" aria-labelledby="editStatusModalLabel" aria-hidden="true" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" data-dismiss="modal" aria-label="Close" class="close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 id="editStatusModalLabel" class="modal-title">Edit Status</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @using (Html.BeginForm("UpdateStatus", "Home", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form", id = "EditStatusForm" }))
+                            {
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <input id="ID" name="candidate.ID" type="hidden" value="ID" />
+                                        <fieldset>
+                                            <div class="form-group">
+                                                <label class="col-sm-2 control-label">Status</label>
+                                                <div class="col-sm-6">
+                                                    <select class="chosen-select input-md form-control" id="UpdateStatusType" name="SelectedStatusType"></select>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                    <div class="panel-footer text-center">
+                                        <button type="button" data-dismiss="modal" class="btn btn-default">Cancel</button>
+                                        &nbsp;
+                                        @if (Request.Url.AbsoluteUri.Contains("Home/Index"))
+                                        {
+                                            <button type="button" id="SaveEditStatusBtnHome" class="btn btn-info">Save Status</button>
+                                        }
+
+                                        else
+                                        {
+                                            <button type="button" id="SaveEditStatusBtn" class="btn btn-info">Save Status</button>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Styles {
+    @Styles.Render("~/bundles/datatablesCss")
+    @Styles.Render("~/bundles/xEditableCss")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/demoDatatable")
+    @Scripts.Render("~/bundles/moment")
+    @Scripts.Render("~/bundles/xEditable")
+    @Scripts.Render("~/bundles/demoXEditable")
+
+    <script type="text/javascript">
+        var JobOrderID = 0;
+        var StatusID = 0;
+
+        $(document).ready(function () {
+            GetStatusTypes();
+            GetStatusTypesHome();
+        });
+
+        $('.EditStatusLink').click(function () {
+            JobOrderID = $(this).attr('id');
+            StatusID = $(this).attr('data-id');
+            $('#editStatusModal #ID').val(JobOrderID);
+            $('#editStatusModal #UpdateStatusType').val(StatusID);
+            $('#editStatusModal').modal('toggle');
+        });
+
+        $('#SaveEditStatusBtn').click(function () {
+            var obj = {
+                ID: JobOrderID,
+                StatusID: $('#editStatusModal #UpdateStatusType').val()
+            };
+
+            var jobOrder = JSON.stringify({ "jobOrder": obj });
+
+            $.ajax({
+                url: 'Home/UpdateStatus',
+                contentType: "application/json; charset=utf-8",
+                data: jobOrder,
+                type: 'POST',
+                dataType: 'json',
+                success: function (Data) {
+                    $('#editStatusModal').modal('toggle');
+                }
+            });
+
+            StatusID = obj.StatusID;
+            $('#datatableJobOrder #statusName' + JobOrderID).text($("#editStatusModal #UpdateStatusType option[value='" + StatusID + "']").text());
+            $('#datatableJobOrder #' + JobOrderID).attr('data-id', StatusID);
+        });
+
+        $('#SaveEditStatusBtnHome').click(function () {
+            var obj = {
+                ID: JobOrderID,
+                StatusID: $('#editStatusModal #UpdateStatusType').val()
+            };
+
+            var jobOrder = JSON.stringify({ "jobOrder": obj });
+
+            $.ajax({
+                url: 'UpdateStatus',
+                contentType: "application/json; charset=utf-8",
+                data: jobOrder,
+                type: 'POST',
+                dataType: 'json',
+                success: function (Data) {
+                    $('#editStatusModal').modal('toggle');
+                }
+            });
+
+            StatusID = obj.StatusID;
+            $('#datatableJobOrder #statusName' + JobOrderID).text($("#editStatusModal #UpdateStatusType option[value='" + StatusID + "']").text());
+            $('#datatableJobOrder #' + JobOrderID).attr('data-id', StatusID);
+        });
+
+        $('#datatableJobOrder').dataTable({
+            'paging': true,  // Table pagination
+            'ordering': true,  // Column ordering
+            'info': true,  // Bottom left status text
+            'responsive': true, // https://datatables.net/extensions/responsive/examples/
+            // Text translation options
+            // Note the required keywords between underscores (e.g _MENU_)
+            oLanguage: {
+                sSearch: 'Search all columns:',
+                sLengthMenu: '_MENU_ records per page',
+                info: 'Showing page _PAGE_ of _PAGES_',
+                zeroRecords: 'Nothing found - sorry',
+                infoEmpty: 'No records available',
+                infoFiltered: '(filtered from _MAX_ total records)'
+            },
+            // set columns options
+            'aoColumns': [
+                { 'bVisible': true },
+                { 'bVisible': true },
+                { 'bVisible': true }
+            ],
+            sDom: 'C<"clear">lfrtip',
+            colVis: {
+                order: 'alfa',
+                'buttonText': 'Show/Hide Columns'
+            }
+        });
+
+        function GetStatusTypes() {
+            $.ajax({
+                url: 'Home/GetStatusTypes',
+                contentType: "application/json; charset=utf-8",
+                type: 'GET',
+                dataType: 'json',
+                success: function (Data) {
+                    $('#UpdateStatusType').empty();
+
+                    var Option = "";
+                    Option += '<option value="0"></option>';
+                    $('#UpdateStatusType').append(Option);
+
+                    for (i = 0; i < Data.length; i++) {
+                        Option = "";
+                        Option += '<option value=';
+                        Option += '"';
+                        Option += Data[i].ID;
+                        Option += '">';
+                        Option += Data[i].Name;
+                        Option += '</option>';
+
+                        $('#UpdateStatusType').append(Option);
+                    }
+                }
+            });
+        }
+
+        function GetStatusTypesHome() {
+            $.ajax({
+                url: 'GetStatusTypes',
+                contentType: "application/json; charset=utf-8",
+                type: 'GET',
+                dataType: 'json',
+                success: function (Data) {
+                    $('#UpdateStatusType').empty();
+
+                    var Option = "";
+                    Option += '<option value="0"></option>';
+                    $('#UpdateStatusType').append(Option);
+
+                    for (i = 0; i < Data.length; i++) {
+                        Option = "";
+                        Option += '<option value=';
+                        Option += '"';
+                        Option += Data[i].ID;
+                        Option += '">';
+                        Option += Data[i].Name;
+                        Option += '</option>';
+
+                        $('#UpdateStatusType').append(Option);
+                    }
+                }
+            });
+        }
+    </script>
+}
